@@ -17,6 +17,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const dbUrl = process.env.ATLASDB_URL;
 const secret = process.env.SECRET;
+const port = process.env.PORT || 8080;
 
 const listingRoutes = require("./routes/listings");
 const reviewRoutes = require("./routes/reviews");
@@ -112,6 +113,6 @@ app.use((err,req,res,next)=>{
 });
 
 // server start
-app.listen(8080, () => {
-    console.log(`server is running at port 8080`);
+app.listen(port, () => {
+    console.log(`server is running at port ${port}`);
 });
