@@ -1,0 +1,31 @@
+<% layout("layouts/boilerplate") %>
+<section class="form-page">
+    <div class="form-shell">
+        <div class="form-header">
+            <h2 class="form-title">Login to WonderLust</h2>
+            <p class="form-subtitle">Sign in to save listings and start exploring WonderLust.</p>
+        </div>
+        <form method="POST" action="/login" class="listing-form">
+            <label class="form-label" for="username">Username</label>
+            <input
+                id="username"
+                class="form-control custom-input"
+                type="text"
+                name="username"
+                placeholder="enter a username"
+                required
+            />
+            <label class="form-label" for="password">Password</label>
+            <input
+                id="password"
+                class="form-control custom-input"
+                type="password"
+                name="password"
+                placeholder="enter a password"
+                minlength="6"
+                required
+            />
+            <button class="btn btn-dark form-btn" type="submit">Sign In</button>
+        </form>
+    </div>
+</section>

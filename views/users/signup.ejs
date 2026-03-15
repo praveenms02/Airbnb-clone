@@ -1,0 +1,40 @@
+<% layout("layouts/boilerplate") %>
+<section class="form-page">
+    <div class="form-shell">
+        <div class="form-header">
+            <h2 class="form-title">Create Account in WonderLust</h2>
+            <p class="form-subtitle">Sign up to save listings and start exploring WonderLust.</p>
+        </div>
+        <form method="POST" action="/signup" class="listing-form">
+            <label class="form-label" for="email">Email</label>
+            <input
+                id="email"
+                class="form-control custom-input"
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            />
+            <label class="form-label" for="username">Username</label>
+            <input
+                id="username"
+                class="form-control custom-input"
+                type="text"
+                name="username"
+                placeholder="Choose a username"
+                required
+            />
+            <label class="form-label" for="password">Password</label>
+            <input
+                id="password"
+                class="form-control custom-input"
+                type="password"
+                name="password"
+                placeholder="Create a password"
+                minlength="6"
+                required
+            />
+            <button class="btn btn-dark form-btn" type="submit">Sign Up</button>
+        </form>
+    </div>
+</section>

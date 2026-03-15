@@ -1,0 +1,126 @@
+<% layout("layouts/boilerplate") %>
+<section class="detail-page">
+    <article class="detail-shell">
+        <% const imageUrl = (list.image && list.image.url) ? list.image.url : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=60"; %>
+        <% const ownerName = list.owner && list.owner.username ? list.owner.username : "Unknown host"; %>
+        <% const mapQuery = encodeURIComponent(`${list.location}, ${list.country}`); %>
+        <img src="<%= imageUrl %>" alt="<%= list.title %>" class="detail-image">
+        
+        <div class="detail-content">
+            <p>Hosted by <strong><%= ownerName %></strong></p>
+            <h2 class="detail-title"><%= list.title %></h2>
+            <p class="detail-description"><%= list.description %></p>
+
+            <div class="detail-meta">
+                <div class="detail-item">
+                    <span class="detail-label">Price</span>
+                    <span class="detail-value">&#8377; <%= list.price.toLocaleString("en-IN") %> / night</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Location</span>
+                    <span class="detail-value"><%= list.location %>, <%= list.country %></span>
+                </div>
+            </div>
+
+            <% if (currentUser && list.owner && list.owner._id.toString() === currentUser._id.toString()) { %>
+                <div class="detail-actions">
+                    <a href="/listings/<%= list._id %>/edit" class="btn btn-outline-dark">Edit</a>
+                    <form method="POST" action="/listings/<%= list._id %>?_method=DELETE" class="d-inline">
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                </div>
+            <% } %>
+        </div>
+
+        <div class="detail-review">
+            <% if(currentUser) { %>
+                <h3 class="detail-review-title">Add Your Review</h3>
+                <form action="/listings/<%= list._id %>/reviews" method="post" class="detail-review-form needs-validation" novalidate>
+                    <div>
+                        <span class="form-label d-block">Rating</span>
+                        <fieldset class="review-input-group">
+                            <legend class="visually-hidden">Choose a star rating</legend>
+                            <div class="review-input-stars">
+                                <% for (let i = 5; i >= 1; i--) { %>
+                                    <input
+                                        class="review-input-radio"
+                                        type="radio"
+                                        id="rating-<%= i %>"
+                                        name="review[rating]"
+                                        value="<%= i %>"
+                                        <%= i === 1 ? "checked" : "" %>
+                                        required
+                                    >
+                                    <label class="review-input-star" for="rating-<%= i %>" aria-label="<%= i %> star<%= i > 1 ? 's' : '' %>">&#9733;</label>
+                                <% } %>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div>
+                        <label for="comment" class="form-label">Add a Review</label>
+                        <textarea id="comment" name="review[comment]" class="form-control custom-input custom-textarea detail-review-textarea" rows="4" required></textarea>
+                        <div class="invalid-feedback">Please add a review comment.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            <% } else { %>
+                <p class="mb-3">
+                    <a href="/login?redirectUrl=/listings/<%= list._id %>">Log in</a> to add a review.
+                </p>
+            <% } %>
+
+            <hr class="detail-divider">
+
+            <div class="reviews-block">
+                <h3 class="reviews-title">All Reviews</h3>
+
+                <% if (!list.reviews || list.reviews.length === 0) { %>
+                    <p class="reviews-empty">No reviews yet. Be the first to share one.</p>
+                <% } else { %>
+                    <ul class="reviews-list">
+                        <% list.reviews.forEach(review => { %>
+                            <% const authorName = review.author && review.author.username ? review.author.username : "deleted-user"; %>
+                            <li class="review-card">
+                                <p class="review-author">@<%= authorName %></p>
+                                <div class="review-rating" aria-label="Rated <%= review.rating %> out of 5 stars">
+                                    <div class="review-stars">
+                                        <% for (let i = 1; i <= 5; i++) { %>
+                                            <span class="review-star <%= i <= review.rating ? 'is-filled' : '' %>">&#9733;</span>
+                                        <% } %>
+                                    </div>
+                                    <span class="review-rating-text"><%= review.rating %> / 5</span>
+                                </div>
+                                <p class="review-comment"><%= review.comment %></p>
+                                <% if (currentUser && review.author && review.author._id.toString() === currentUser._id.toString()) { %>
+                                    <form action="/listings/<%= list._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="d-inline">
+                                        <button class="btn btn-sm btn-danger mb-3 mt-3 review-delete-btn" type="submit">
+                                            Delete
+                                        </button>
+                                    </form>
+                                <% } %>
+                            </li>
+                        <% }) %>
+                    </ul>
+                <% } %>
+            </div>
+
+            <section class="detail-map-section">
+                <div class="detail-map-header">
+                    <h3 class="detail-map-title">Location Map</h3>
+                    <p class="detail-map-subtitle"><%= list.location %>, <%= list.country %></p>
+                </div>
+                <div class="detail-map-frame">
+                    <iframe
+                        src="https://maps.google.com/maps?q=<%= mapQuery %>&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                        title="Map showing <%= list.title %>"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </section>
+        </div>
+    </article>
+</section>
